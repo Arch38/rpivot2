@@ -86,41 +86,45 @@ class RelayServer:
                 logger.info('SIGINT received. Closing relay and exiting')
                 self.shutdown()
                 sys.exit(1)
-            for self.selected_input_socket in inputready:
-                if self.selected_input_socket == self.server:
-                    self.on_accept()
-                    break
-
-                if self.selected_input_socket == self.socket_with_server:
+            for selected_input_socket in inputready:
+                if selected_input_socket == self.server:
+                    socks_client_socket, clientaddr = self.server.accept()
+                    logger.debug("Socks client {0} has connected".format(clientaddr))
+                    self.input_list.append(socks_client_socket)
+                    self.pending_socks_clients.append(socks_client_socket)
+                elif selected_input_socket == self.socket_with_server:
                     try:
-                        self.manage_remote_socket(self.selected_input_socket)
+                        logger.debug("Processing client.")
+                        self.manage_remote_socket(selected_input_socket)
                     except relay.RelayError:
                         logger.debug('Main loop: got RelayError. Closing connection with remote side and exiting loop')
                         self.shutdown()
                         return
-                elif self.selected_input_socket in self.pending_socks_clients:
-                    self.pending_socks_clients.remove(self.selected_input_socket)
+                elif selected_input_socket in self.pending_socks_clients:
+                    self.pending_socks_clients.remove(selected_input_socket)
                     try:
-                        ip, port = self.handle_new_socks_connection(self.selected_input_socket)
+                        ip, port = self.handle_new_socks_connection(selected_input_socket)
+                        logger.info('---------> {}'.format(ip))
+                        logger.info('---------> {}'.format(port))
                     except relay.RelayError:
-                        logger.debug("Closing socks client socket {0}".format(self.selected_input_socket))
-                        self.input_list.remove(self.selected_input_socket)
-                        self.selected_input_socket.close()
+                        logger.debug("Closing socks client socket {0}".format(selected_input_socket))
+                        self.input_list.remove(selected_input_socket)
+                        selected_input_socket.close()
                         continue
-                    #self.input_list.append(self.selected_input_socket)
-                    new_channel_id = self.set_channel(self.selected_input_socket)
+                    #self.input_list.append(selected_input_socket)
+                    new_channel_id = self.set_channel(selected_input_socket)
                     logger.debug("Sending command to open channel {0}".format(new_channel_id))
                     self.send_remote_cmd(self.socket_with_server, relay.CHANNEL_OPEN_CMD, new_channel_id, ip, port)
 
 
-                elif self.selected_input_socket in self.id_by_socket:
-                    self.manage_socks_client_socket(self.selected_input_socket)
+                elif selected_input_socket in self.id_by_socket:
+                    self.manage_socks_client_socket(selected_input_socket)
                 else:
-                    logger.debug("Active socket {0} does not belong to channel. Closing it".format(self.selected_input_socket))
-                    self.selected_input_socket.close()
-
+                    logger.debug("Active socket {0} does not belong to channel. Closing it".format(selected_input_socket))
+                    selected_input_socket.close()
 
     def parse_socks_header(self, data):
+        logger.info('parse_socks_header ----> {}'.format(data.encode('hex')))
         try:
             (vn, cd, dstport, dstip) = unpack('>BBHI', data[:8])
         except struct.error:
@@ -258,15 +262,6 @@ class RelayServer:
         except socket.error as (code, cmd):
             logger.error('Socket error on sending command to remote side. Code {0}. Msg {1}'.format(code, cmd))
             raise relay.RelayError
-
-    def on_accept(self):
-        socks_client_socket, clientaddr = self.server.accept()
-        logger.debug("Socks client {0} has connected".format(clientaddr))
-        self.input_list.append(socks_client_socket)
-        self.pending_socks_clients.append(socks_client_socket)
-
-
-
 
     def handle_new_socks_connection(self, sock):
         try:
