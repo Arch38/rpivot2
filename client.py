@@ -328,7 +328,6 @@ class SocksRelay:
 
 
 class NtlmProxyContext(object):
-
     negotiate_request = '''CONNECT {0}:{1} HTTP/1.1
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0
 Proxy-Connection: keep-alive

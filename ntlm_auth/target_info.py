@@ -8,23 +8,25 @@
 """
 
 import struct
+
 try:
     from collections import OrderedDict
 except ImportError:
     from ordereddict import OrderedDict
 
+
 class TargetInfo(object):
-    MSV_AV_EOL                  = 0x00
-    MSV_AV_NB_COMPUTER_NAME     = 0x01
-    MSV_AV_NB_DOMAIN_NAME       = 0x02
-    MSV_AV_DNS_COMPUTER_NAME    = 0x03
-    MSV_AV_DNS_DOMAIN_NAME      = 0x04
-    MSV_AV_DNS_TREE_NAME        = 0x05
-    MSV_AV_FLAGS                = 0x06
-    MSV_AV_TIMESTAMP            = 0x07
-    MSV_AV_SINGLE_HOST          = 0x08
-    MSV_AV_TARGET_NAME          = 0x09
-    MSV_AV_CHANNEL_BINDINGS     = 0x0a
+    MSV_AV_EOL = 0x00
+    MSV_AV_NB_COMPUTER_NAME = 0x01
+    MSV_AV_NB_DOMAIN_NAME = 0x02
+    MSV_AV_DNS_COMPUTER_NAME = 0x03
+    MSV_AV_DNS_DOMAIN_NAME = 0x04
+    MSV_AV_DNS_TREE_NAME = 0x05
+    MSV_AV_FLAGS = 0x06
+    MSV_AV_TIMESTAMP = 0x07
+    MSV_AV_SINGLE_HOST = 0x08
+    MSV_AV_TARGET_NAME = 0x09
+    MSV_AV_CHANNEL_BINDINGS = 0x0a
 
     def __init__(self, data=None):
         self.fields = OrderedDict()
@@ -36,7 +38,7 @@ class TargetInfo(object):
 
     def __getitem__(self, key):
         if key in self.fields:
-           return self.fields[key]
+            return self.fields[key]
         return None
 
     def __delitem__(self, key):

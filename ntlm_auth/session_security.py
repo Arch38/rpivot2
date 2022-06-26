@@ -9,7 +9,7 @@
 # Lesser General Public License for more details.
 
 # You should have received a copy of the GNU Lesser General Public
-# License along with this library.  If not, see <http://www.gnu.org/licenses/> or <http://www.gnu.org/licenses/lgpl.txt>.
+# License along with this library. If not, see <http://www.gnu.org/licenses/> or <http://www.gnu.org/licenses/lgpl.txt>.
 
 import binascii
 import hmac
@@ -33,6 +33,7 @@ class _NtlmMessageSignature1(object):
         :param checksum: A 4-byte array that contains the checksum for the message
         :param seq_num: A 32-bit unsigned integer that contains the NTLM sequence number for this application message
     """
+
     def __init__(self, random_pad, checksum, seq_num):
         self.version = struct.pack("<I", 1)
         self.random_pad = random_pad
@@ -46,9 +47,10 @@ class _NtlmMessageSignature1(object):
         signature += self.seq_num
 
         assert self.EXPECTED_BODY_LENGTH == len(signature), "BODY_LENGTH: %d != signature: %d" % (
-        self.EXPECTED_BODY_LENGTH, len(signature))
+            self.EXPECTED_BODY_LENGTH, len(signature))
 
         return signature
+
 
 class _NtlmMessageSignature2(object):
     EXPECTED_BODY_LENGTH = 16
@@ -79,6 +81,7 @@ class _NtlmMessageSignature2(object):
 
         return signature
 
+
 class SessionSecurity(object):
     """
     Initialises a security session context that can be used by libraries that call ntlm-auth to sign and seal
@@ -89,13 +92,16 @@ class SessionSecurity(object):
     :param exported_session_key: A 128-bit session key used to derive signing and sealing keys
     :param source: The source of the message, only used in test scenarios when testing out a server sealing and unsealing
     """
+
     def __init__(self, negotiate_flags, exported_session_key, source="client"):
         self.negotiate_flags = negotiate_flags
         self.outgoing_seq_num = 0
         self.incoming_seq_num = 0
 
-        client_sealing_key = compkeys.get_seal_key(self.negotiate_flags, exported_session_key, SignSealConstants.CLIENT_SEALING)
-        server_sealing_key = compkeys.get_seal_key(self.negotiate_flags, exported_session_key, SignSealConstants.SERVER_SEALING)
+        client_sealing_key = compkeys.get_seal_key(self.negotiate_flags, exported_session_key,
+                                                   SignSealConstants.CLIENT_SEALING)
+        server_sealing_key = compkeys.get_seal_key(self.negotiate_flags, exported_session_key,
+                                                   SignSealConstants.SERVER_SEALING)
 
         if source == "client":
             self.outgoing_signing_key = compkeys.get_sign_key(exported_session_key, SignSealConstants.CLIENT_SIGNING)
@@ -193,7 +199,8 @@ class SessionSecurity(object):
         @param message: The message data that will be signed
         @return signature: Either _NtlmMessageSignature1 or _NtlmMessageSignature2 depending on the flags set
         """
-        signature = calc_signature(message, self.negotiate_flags, self.outgoing_signing_key, self.outgoing_seq_num, self.outgoing_handle)
+        signature = calc_signature(message, self.negotiate_flags, self.outgoing_signing_key, self.outgoing_seq_num,
+                                   self.outgoing_handle)
         self.outgoing_seq_num += 1
 
         return signature.get_data()
@@ -213,7 +220,8 @@ class SessionSecurity(object):
             actual_checksum = signature[8:12]
             actual_seq_num = struct.unpack("<I", signature[12:16])[0]
 
-        expected_signature = calc_signature(message, self.negotiate_flags, self.incoming_signing_key, self.incoming_seq_num, self.incoming_handle)
+        expected_signature = calc_signature(message, self.negotiate_flags, self.incoming_signing_key,
+                                            self.incoming_seq_num, self.incoming_handle)
         expected_checksum = expected_signature.checksum
         expected_seq_num = struct.unpack("<I", expected_signature.seq_num)[0]
 
@@ -221,7 +229,8 @@ class SessionSecurity(object):
             raise Exception("The signature checksum does not match, message has been altered")
 
         if actual_seq_num != expected_seq_num:
-            raise Exception("The signature sequence number does not match up, message not received in the correct sequence")
+            raise Exception(
+                "The signature sequence number does not match up, message not received in the correct sequence")
 
         self.incoming_seq_num += 1
 
