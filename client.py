@@ -299,12 +299,11 @@ class SocksRelay:
             logger.debug("[channel {}] Opening {} : {}".format(channel_id, host, port))
             sock.connect_ex((host, port))
         except socket.error as (code, msg):
-            logger.error("[channel {}] Caught exception socket.error during establishing forward connection. "
-                         "Code {}. Msg {}".format(channel_id, code, msg))
+            logger.error("[channel {}] Caught exception socket.error: {}: {}".format(channel_id, code, msg))
             self.send_remote_cmd(relay.FORWARD_CONNECTION_FAILURE, channel_id)
             return
 
-        logger.debug('[channel {}] Adding new pending forward connection with socket {}'.format(channel_id, sock))
+        logger.debug('[channel {}] New pending forward connection: {}'.format(channel_id, sock))
         self.establishing_dict[sock] = channel_id
 
     def relay(self, data, to_socket):
@@ -524,8 +523,8 @@ def main():
         try:
             socks_relayer.run()
         except socket.error as (code, msg):
-            logger.error('Exception in socks_relayer.run(). Restarting relay...')
-            logger.error('Errno: {0} Msg: {1}'.format(errno.errorcode[code], msg))
+            logger.error('Exception in socks_relayer.run(). '
+                         'Errno: {0} Msg: {1}. Restarting relay...'.format(errno.errorcode[code], msg))
             bc_sock.close()
             continue
 
