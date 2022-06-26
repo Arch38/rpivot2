@@ -4,28 +4,28 @@ import socket
 
 buffer_size = 4096
 delay = 0.0001
-socks_server_reply_success = '\x00\x5a\xff\xff\xff\xff\xff\xff'
-socks_server_reply_fail = '\x00\x5b\xff\xff\xff\xff\xff\xff'
+socks_server_reply_success = b'\x00\x5a\xff\xff\xff\xff\xff\xff'
+socks_server_reply_fail = b'\x00\x5b\xff\xff\xff\xff\xff\xff'
 relay_timeout = 60
-banner = 'RPIVOT'
-banner_response = 'TUNNELRDY'
+banner = b'RPIVOT'
+banner_response = b'TUNNELRDY'
 
 COMMAND_CHANNEL = 0
 
-CHANNEL_CLOSE_CMD = '\xcc'
-CHANNEL_OPEN_CMD = '\xdd'
-FORWARD_CONNECTION_SUCCESS = '\xee'
-FORWARD_CONNECTION_FAILURE = '\xff'
-CLOSE_RELAY = '\xc4'
-PING_CMD = '\x70'
+CHANNEL_CLOSE_CMD = b'\xcc'
+CHANNEL_OPEN_CMD = b'\xdd'
+FORWARD_CONNECTION_SUCCESS = b'\xee'
+FORWARD_CONNECTION_FAILURE = b'\xff'
+CLOSE_RELAY = b'\xc4'
+PING_CMD = b'\x70'
 
 cmd_names = {
-    '\xcc': 'CHANNEL_CLOSE_CMD',
-    '\xdd': 'CHANNEL_OPEN_CMD',
-    '\xee': 'FORWARD_CONNECTION_SUCCESS',
-    '\xff': 'FORWARD_CONNECTION_FAILURE',
-    '\xc4': 'CLOSE_RELAY',
-    '\x70': 'PING_CMD'
+    b'\xcc': b'CHANNEL_CLOSE_CMD',
+    b'\xdd': b'CHANNEL_OPEN_CMD',
+    b'\xee': b'FORWARD_CONNECTION_SUCCESS',
+    b'\xff': b'FORWARD_CONNECTION_FAILURE',
+    b'\xc4': b'CLOSE_RELAY',
+    b'\x70': b'PING_CMD'
 }
 
 
@@ -38,7 +38,7 @@ class RelayError(Exception):
 
 
 def recvall(sock, data_len):
-    buf = ''
+    buf = b''
     while True:
         buf += sock.recv(data_len - len(buf))
         if len(buf) == data_len:
