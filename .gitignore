@@ -1,2 +1,5 @@
-venv
-build
+*.pyc
+__pycache__
+.idea
+.vscode
+/
