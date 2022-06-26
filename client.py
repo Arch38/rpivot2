@@ -252,7 +252,6 @@ class SocksRelay:
             logger.debug('Got data to relay from app side. Channel id {0}. '
                          'Data length: {1}'.format(channel_id, len(data)))
             logger.debug('Preparing tlv header: {0}'.format(tlv_header.encode('hex')))
-            logger.debug('Data contents: {0}'.format(data.encode('hex')))
             self.relay(tlv_header + data, self.bc_sock)
 
     def close_forward_connection(self, sock):
