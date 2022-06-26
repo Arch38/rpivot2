@@ -12,14 +12,15 @@
 # Lesser General Public License for more details.
 
 # You should have received a copy of the GNU Lesser General Public
-# License along with this library.  If not, see <http://www.gnu.org/licenses/> or <http://www.gnu.org/licenses/lgpl.txt>.
+# License along with this library. If not, see <http://www.gnu.org/licenses/> or <http://www.gnu.org/licenses/lgpl.txt>.
 import six
 
 from ntlm_auth.U32 import U32
 from ntlm_auth.des_data import des_SPtrans, des_skb
 
+
 def c2l(c):
-    "char[4] to unsigned long"
+    """char[4] to unsigned long"""
     l = U32(c[0])
     l = l | (U32(c[1]) << 8)
     l = l | (U32(c[2]) << 16)
@@ -28,7 +29,7 @@ def c2l(c):
 
 
 def l2c(l):
-    "unsigned long to char[4]"
+    """unsigned long to char[4]"""
     c = []
     c.append(int(l & U32(0xFF)))
     c.append(int((l >> 8) & U32(0xFF)))
@@ -56,7 +57,7 @@ def D_ENCRYPT(tup, u, t, s):
 
 
 def PERM_OP(tup, n, m):
-    "tup - (a, b, t)"
+    """tup - (a, b, t)"""
     a, b, t = tup
     t = ((a >> n) ^ b) & m
     b = b ^ t
@@ -220,7 +221,7 @@ def des_set_key(key):
     d, c, t = PERM_OP((d, c, t), 1, U32(0x55555555))
 
     d = (((d & U32(0x000000ff)) << 16) | (d & U32(0x0000ff00)) | ((d & U32(0x00ff0000)) >> 16) | (
-        (c & U32(0xf0000000)) >> 4))
+            (c & U32(0xf0000000)) >> 4))
     c = c & U32(0x0fffffff)
 
     for i in range(16):

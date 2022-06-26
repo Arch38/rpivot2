@@ -9,7 +9,7 @@
 # Lesser General Public License for more details.
 
 # You should have received a copy of the GNU Lesser General Public
-# License along with this library.  If not, see <http://www.gnu.org/licenses/> or <http://www.gnu.org/licenses/lgpl.txt>.
+# License along with this library. If not, see <http://www.gnu.org/licenses/> or <http://www.gnu.org/licenses/lgpl.txt>.
 
 class ARC4(object):
     state = None
@@ -23,7 +23,7 @@ class ARC4(object):
         else:
             key = [c for c in key]
 
-        #Key-scheduling algorithm (KSA)
+        # Key-scheduling algorithm (KSA)
         self.state = [n for n in range(256)]
         j = 0
         for i in range(256):
@@ -43,7 +43,7 @@ class ARC4(object):
         return bytes(bytearray(chars))
 
     def _random_generator(self):
-        #Pseudo-Random Generation Algorithm (PRGA)
+        # Pseudo-Random Generation Algorithm (PRGA)
         while True:
             self.i = (self.i + 1) % 256
             self.j = (self.j + self.state[self.i]) % 256

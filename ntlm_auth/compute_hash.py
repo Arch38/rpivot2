@@ -9,12 +9,10 @@
 # Lesser General Public License for more details.
 
 # You should have received a copy of the GNU Lesser General Public
-# License along with this library.  If not, see <http://www.gnu.org/licenses/> or <http://www.gnu.org/licenses/lgpl.txt>.
+# License along with this library. If not, see <http://www.gnu.org/licenses/> or <http://www.gnu.org/licenses/lgpl.txt>.
 
-import binascii
 import hashlib
 import hmac
-import re
 from ntlm_auth import des
 
 
@@ -26,7 +24,8 @@ def _lmowfv1(password, lmhash):
     Same function as LMOWFv1 in document to create a one way hash of the password. Only
     used in NTLMv1 auth without session security
 
-    :param password: The password of the user we are trying to authenticate with
+    @param password: The password of the user we are trying to authenticate with
+    @param lmhash: ...
     :return res: A Lan Manager hash of the password supplied
     """
 
@@ -48,6 +47,7 @@ def _lmowfv1(password, lmhash):
     res = res + dobj.encrypt(magic_str)
     return res
 
+
 def _ntowfv1(password, nthash):
     """
     [MS-NLMP] v28.0 2016-07-14
@@ -56,7 +56,8 @@ def _ntowfv1(password, nthash):
     Same function as NTOWFv1 in document to create a one way hash of the password. Only
     used in NTLMv1 auth without session security
 
-    :param password: The password of the user we are trying to authenticate with
+    @param password: The password of the user we are trying to authenticate with
+    @param nthash: ...
     :return digest: An NT hash of the password supplied
     """
     if nthash is not None:
@@ -64,6 +65,7 @@ def _ntowfv1(password, nthash):
 
     digest = hashlib.new('md4', password.encode('utf-16le')).digest()
     return digest
+
 
 def _ntowfv2(user_name, password, nthash, domain_name):
     """
@@ -73,13 +75,13 @@ def _ntowfv2(user_name, password, nthash, domain_name):
     Same function as NTOWFv2 (and LMOWFv2) in document to create a one way hash of the password.
     This combines some extra security features over the v1 calculations used in NTLMv2 auth.
 
-    :param user_name: The user name of the user we are trying to authenticate with
-    :param password: The password of the user we are trying to authenticate with
-    :param domain_name: The domain name of the user account we are authenticated with
-    :return digest: An NT hash of the parameters supplied
+    @param user_name: The username of the user we are trying to authenticate with
+    @param password: The password of the user we are trying to authenticate with
+    @param nthash: ...
+    @param domain_name: The domain name of the user account we are authenticated with
+    @return digest: An NT hash of the parameters supplied
     """
     digest = _ntowfv1(password, nthash)
     digest = hmac.new(digest, (user_name.upper() + domain_name).encode('utf-16le')).digest()
-
 
     return digest

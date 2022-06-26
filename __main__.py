@@ -12,7 +12,9 @@ except IndexError:
 
 if rpivot_type == 'client':
     import client
+
     client.main()
 elif rpivot_type == 'server':
     import server
+
     server.main()

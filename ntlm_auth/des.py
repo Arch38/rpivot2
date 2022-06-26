@@ -12,7 +12,7 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with this library.  If not, see <http://www.gnu.org/licenses/> or <http://www.gnu.org/licenses/lgpl.txt>.
+# License along with this library. If not, see <http://www.gnu.org/licenses/> or <http://www.gnu.org/licenses/lgpl.txt>.
 import logging
 import six
 from ntlm_auth import des_c
@@ -44,7 +44,6 @@ DESException = 'DESException'
 
 
 def str_to_key56(key_str):
-
     if not type(key_str) == six.binary_type:
         # TODO rsanders high - figure out how to make this not necessary
         key_str = key_str.encode('ascii')

@@ -9,7 +9,7 @@
 # Lesser General Public License for more details.
 
 # You should have received a copy of the GNU Lesser General Public
-# License along with this library.  If not, see <http://www.gnu.org/licenses/> or <http://www.gnu.org/licenses/lgpl.txt>.
+# License along with this library. If not, see <http://www.gnu.org/licenses/> or <http://www.gnu.org/licenses/lgpl.txt>.
 
 import struct
 
@@ -24,6 +24,8 @@ import struct
     For more infor on how this works and how it is derived, this is a great link;
     https://blogs.msdn.microsoft.com/openspecification/2013/03/26/ntlm-and-channel-binding-hash-aka-extended-protection-for-authentication/
 """
+
+
 class GssChannelBindingsStruct(object):
     INITIATOR_ADDTYPE = 'initiator_addtype'
     INITIATOR_ADDRESS_LENGTH = 'initiator_address_length'
