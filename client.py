@@ -11,7 +11,7 @@ import errno
 import relay
 import threading
 from ntlm_auth.ntlm import Ntlm
-from common import create_logger
+from common import create_logger, b, to_hex, ls
 
 
 def key_by_value(my_dict, value):
@@ -71,7 +71,7 @@ class SocksRelay:
             try:
                 time.sleep(relay.delay)
                 logger.debug('Active channels: {0}. '
-                             'Pending Channels {1}'.format(self.channel.keys(), self.establishing_dict.values()))
+                             'Pending Channels {1}'.format(ls(self.channel.keys()), ls(self.establishing_dict.values())))
                 inputready, outputready, _ = select.select(self.input_list, self.establishing_dict.keys(), [], 15)
             except KeyboardInterrupt:
                 logger.info('SIGINT received. Closing relay and exiting')
@@ -126,7 +126,7 @@ class SocksRelay:
                     self.manage_forward_socket(selected_input_socket)
 
     def handle_remote_cmd(self, data):
-        cmd = data[0]
+        cmd = b(data[0])
         logger.debug('Received command data from remote side. Cmd: {0}'.format(relay.cmd_names[cmd]))
 
         if cmd == relay.CHANNEL_CLOSE_CMD:
@@ -150,7 +150,7 @@ class SocksRelay:
                 self.input_list.remove(sock_to_close)
 
         elif cmd == relay.CHANNEL_OPEN_CMD:
-            logger.debug('Data on channel id: {0}'.format(data.encode('hex')))
+            logger.debug('Data on channel id: {0}'.format(to_hex(data)))
             channel_id, packed_ip, port = unpack('<HIH', data[1:9])
             ip = socket.inet_ntoa(data[3:7])  # ERROR HAPPENS HERE
             logger.debug('Got new channel request with id {0}. '
@@ -230,7 +230,7 @@ class SocksRelay:
             tlv_header = pack('<HH', channel_id, len(data))
             logger.debug('Got data to relay from app side. Channel id {0}. '
                          'Data length: {1}'.format(channel_id, len(data)))
-            logger.debug('Preparing tlv header: {0}'.format(tlv_header.encode('hex')))
+            logger.debug('Preparing tlv header: {0}'.format(to_hex(tlv_header)))
             self.relay(tlv_header + data, self.bc_sock)
 
     def close_forward_connection(self, sock):
