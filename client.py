@@ -227,7 +227,6 @@ class SocksRelay:
             logger.debug('Got data to relay from app side. Channel id {0}. '
                          'Data length: {1}'.format(channel_id, len(data)))
             logger.debug('Preparing tlv header: {0}'.format(tlv_header.encode('hex')))
-            logger.debug('Data contents: {0}'.format(data.encode('hex')))
             self.relay(tlv_header + data, self.bc_sock)
 
     def close_forward_connection(self, sock):
@@ -275,12 +274,11 @@ class SocksRelay:
             logger.debug("[channel {}] Opening {} : {}".format(channel_id, host, port))
             sock.connect_ex((host, port))
         except socket.error as (code, msg):
-            logger.error("[channel {}] Caught exception socket.error during establishing forward connection. "
-                         "Code {}. Msg {}".format(channel_id, code, msg))
+            logger.error("[channel {}] Caught exception socket.error: {}: {}".format(channel_id, code, msg))
             self.send_remote_cmd(relay.FORWARD_CONNECTION_FAILURE, channel_id)
             return
 
-        logger.debug('[channel {}] Adding new pending forward connection with socket {}'.format(channel_id, sock))
+        logger.debug('[channel {}] New pending forward connection: {}'.format(channel_id, sock))
         self.establishing_dict[sock] = channel_id
 
     def relay(self, data, to_socket):
@@ -303,7 +301,6 @@ class SocksRelay:
 
 
 class NtlmProxyContext(object):
-
     negotiate_request = '''CONNECT {0}:{1} HTTP/1.1
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0
 Proxy-Connection: keep-alive
@@ -501,8 +498,8 @@ def main():
         try:
             socks_relayer.run()
         except socket.error as (code, msg):
-            logger.error('Exception in socks_relayer.run(). Restarting relay...')
-            logger.error('Errno: {0} Msg: {1}'.format(errno.errorcode[code], msg))
+            logger.error('Exception in socks_relayer.run(). '
+                         'Errno: {0} Msg: {1}. Restarting relay...'.format(errno.errorcode[code], msg))
             bc_sock.close()
             continue
 

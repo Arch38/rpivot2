@@ -13,7 +13,6 @@ import threading
 import optparse
 from common import create_logger
 
-
 PROXY_IP = '127.0.0.1'
 PROXY_PORT = '1080'
 
@@ -266,7 +265,7 @@ class RelayServer:
             tlv_header = pack('<HH', relay.COMMAND_CHANNEL, len(cmd_buffer))
         elif cmd == relay.CHANNEL_OPEN_CMD:
             channel_id, ip, port = args
-            cmd_buffer = cmd + pack('<H',  channel_id) + socket.inet_aton(ip) + pack('<H', port)
+            cmd_buffer = cmd + pack('<H', channel_id) + socket.inet_aton(ip) + pack('<H', port)
             tlv_header = pack('<HH', relay.COMMAND_CHANNEL, len(cmd_buffer))
         else:
             cmd_buffer = cmd
