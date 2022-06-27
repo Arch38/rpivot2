@@ -128,13 +128,16 @@ class RelayServer:
 
     @staticmethod
     def parse_socks_header(data):
+        """
+        https://www.openssh.com/txt/socks4.protocol
+        """
         try:
             (vn, cd, dstport, dstip) = unpack('>BBHI', data[:8])
         except struct.error:
             logger.debug('Invalid socks header! Got data: {0}'.format(repr(data)))
             raise relay.RelayError
         if vn != 4:
-            logger.debug('Invalid socks header! Got data: {0}'.format(repr(data)))
+            logger.debug('Invalid socks header! Only Socks4 supported')
             raise relay.RelayError
         str_ip = socket.inet_ntoa(pack(">L", dstip))
         logger.debug('Socks Header: socks version: {0}; '
