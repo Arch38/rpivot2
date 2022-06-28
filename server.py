@@ -44,7 +44,7 @@ class RelayServer:
 
     def ping_worker(self):
         while True:
-            time.sleep(10)
+            time.sleep(100)
             current_time = time.time()
             if self.remote_side_down:
                 logger.debug('Remote side is down, exiting...')
@@ -185,7 +185,7 @@ class RelayServer:
             tlv_header = pack('<HH', channel_id, len(data))
             logger.debug('[channel {}] Got data to relay from the app. Data length: {}'.format(channel_id, len(data)))
             logger.debug('[channel {}] Preparint tlv header: {}'.format(channel_id, to_hex(tlv_header)))
-            logger.debug('[channel {}] Data contents: {}'.format(channel_id, to_hex(data)))
+            # logger.debug('[channel {}] Data contents: {}'.format(channel_id, to_hex(data)))
             self.relay(tlv_header + data, self.client_sock)
 
     def handle_remote_cmd(self, data):

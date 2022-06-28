@@ -45,7 +45,7 @@ class SocksRelay:
 
     def ping_worker(self):
         while True:
-            time.sleep(10)
+            time.sleep(100)
             current_time = time.time()
 
             if self.remote_side_down:
