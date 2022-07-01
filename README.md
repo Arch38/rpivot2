@@ -1,4 +1,4 @@
-# rpivot2 - reverse SOCKS4 proxy for penetration tests.
+# rpivot2 - reverse SOCKS4 proxy for penetration tests
 
 Fork of [klsecservices/rpivot](https://github.com/klsecservices/rpivot) by Artem Kondratenko (https://twitter.com/artkond)
 
