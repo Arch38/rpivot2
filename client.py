@@ -170,7 +170,10 @@ class SocksRelay(Relay):
                         self.close_sockets(self.input_connections)
                         return
                 else:
-                    self.manage_socks_client_socket(selected_input_socket)
+                    try:
+                        self.manage_socks_client_socket(selected_input_socket)
+                    except RelayMainError as err:
+                        log.debug(err)
 
 
 def main():
