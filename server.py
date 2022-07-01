@@ -199,12 +199,13 @@ class RelayServer:
             if channel_id not in self.channel:
                 logger.warning('[channel {}] Channel already closed'.format(channel_id))
                 return
-            else:
-                sock_to_close = self.channel[channel_id]
-                self.input_list.remove(sock_to_close)
-                self.unset_channel(channel_id)
-                logger.debug('[channel {}] Closing socket {}...'.format(channel_id, sock_to_close))
-                sock_to_close.close()
+
+            sock_to_close = self.channel[channel_id]
+            self.input_list.remove(sock_to_close)
+            self.unset_channel(channel_id)
+            logger.debug('[channel {}] Closing socket {}...'.format(channel_id, sock_to_close))
+            sock_to_close.close()
+
         elif cmd == relay.FORWARD_CONNECTION_SUCCESS:
             channel_id = unpack('<H', data[1:3])[0]
             if channel_id in self.channel:
@@ -249,7 +250,6 @@ class RelayServer:
                     logger.debug('channel {}] Error on closing socket: Code {}. Msg {}'.format(channel_id, code, msg))
             else:
                 logger.warning('[channel {}] Tried to close channel that is already closed'.format(channel_id))
-
         elif cmd == relay.CLOSE_RELAY:
             logger.info('Got command to close relay. Closing connection with client.')
             raise relay.RelayError

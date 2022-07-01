@@ -22,9 +22,6 @@ def key_by_value(my_dict, value):
 
 
 class SocksRelay:
-    STATUS_SUCCESS = 0
-    STATUS_REFUSED = 1
-    STATUS_TIMEOUT = 2
 
     def __init__(self, bc_sock):
         self.channel = {}
@@ -142,12 +139,11 @@ class SocksRelay:
                 logger.debug('Channel {0} non existent'.format(channel_id))
                 return
 
-            else:
-                sock_to_close = self.channel[channel_id]
-                self.unset_channel(channel_id)
-                logger.debug('Closing socket with id: {0}'.format(channel_id))
-                sock_to_close.close()
-                self.input_list.remove(sock_to_close)
+            sock_to_close = self.channel[channel_id]
+            self.unset_channel(channel_id)
+            logger.debug('Closing socket with id: {0}'.format(channel_id))
+            sock_to_close.close()
+            self.input_list.remove(sock_to_close)
 
         elif cmd == relay.CHANNEL_OPEN_CMD:
             logger.debug('Data on channel id: {0}'.format(to_hex(data)))
