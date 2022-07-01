@@ -276,6 +276,10 @@ def main():
             bc_sock.close()
             continue
 
+        except KeyboardInterrupt:
+            log.error("Ctrl C - Stopping server...")
+            sys.exit(1)
+
         time.sleep(10)
 
 
