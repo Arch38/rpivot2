@@ -88,7 +88,7 @@ class Relay(object):
         raise NotImplementedError
 
     @staticmethod
-    def __close_sockets(sockets):
+    def close_sockets(sockets):
         for s in sockets:
             try:
                 s.close()
@@ -113,7 +113,7 @@ class Relay(object):
 
     def shutdown(self):
         self.remote_side_is_down = True
-        self.__close_sockets(self.input_connections)
+        self.close_sockets(self.input_connections)
 
     @staticmethod
     def parse_socks_header(data):

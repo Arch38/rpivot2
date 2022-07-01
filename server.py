@@ -284,7 +284,7 @@ def run_server(host, port, proxy_host, proxy_port):
         try:
             server.main_loop()
         except RelayMainError as err:
-            log.error('Got RelayError in server.main_loop(): {}'.format(err))
+            log.error('RelayMainError in main_loop(): {}'.format(err))
             log.info('Restarting relay...')
             server.server.close()
             continue
