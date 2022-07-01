@@ -6,7 +6,7 @@ buffer_size = 4096
 delay = 0.0001
 socks_server_reply_success = b'\x00\x5a\xff\xff\xff\xff\xff\xff'
 socks_server_reply_fail = b'\x00\x5b\xff\xff\xff\xff\xff\xff'
-relay_timeout = 60
+relay_timeout = 160
 banner = b'RPIVOT'
 banner_response = b'TUNNELRDY'
 
